@@ -1,0 +1,83 @@
+---
+title: "Hospital cost reports"
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+In this document, I will conduct an analysis of the Hospital cost reports from Medicare-certified institutional providers.
+
+First, I will load the data
+
+```{r}
+library(tidyverse)
+
+# load the cost reports data
+cost_reports <- read_csv("hospital_data/CostReport_2021_Final.csv")
+
+# take a look at the data
+head(cost_reports) |> print(width = Inf)
+```
+
+
+```{r}
+# use the janitor library to clean the column names of cost_reports
+cost_reports_clean <- janitor::clean_names(cost_reports)
+```
+
+Let's look at how many missing values there are in each column
+
+```{r}
+# count the number of missing values in each column
+cost_reports_clean %>%
+  summarise_all(~sum(is.na(.))) |> print(width = Inf)
+# report the percentage of missing values in each column. 
+
+# This code snippet calculates the proportion of missing values for each column in the 'cost_reports_clean' dataset.
+# It uses the 'summarise_all' function to apply a lambda function that computes the ratio of NA values to the total number of rows.
+# The result is then printed with an infinite width to ensure all columns are displayed.
+cost_reports_clean %>%
+  summarise_all(~sum(is.na(.)) / n()) |> print(width = Inf)
+
+```
+
+
+## Exploring the data
+
+Let's visualize the relationship between total costs and number of beds
+
+```{r}
+# plot the relationship between total costs and number of beds
+cost_reports_clean %>%
+  ggplot(aes(x = total_costs, y = number_of_beds)) +
+  geom_point() +
+  labs(title = "Total costs vs. Number of beds",
+       x = "Total costs",
+       y = "Number of beds")
+```
+
+
+
+```{r}
+# set vs code plot options to decrease dimension of plot
+options(vsc.dev.args = list(width = 800, height = 800))
+# write a function that will take any two columns and create a scatterplot
+scatterplot <- function(data, x, y) {
+  data %>%
+    ggplot(aes(x = {{x}}, y = {{y}})) +
+    geom_point() +
+    labs(title = paste0(x, " vs. ", y),
+         x = x,
+         y = y)
+}
+```
+
+Identify which hospital has the highest cost-to-beds ratio
+
+```{r}
+# find the hospital with the highest cost-to-beds ratio
+cost_reports_clean %>%
+  filter(cost_to_charge_ratio == max(cost_to_charge_ratio, na.rm = TRUE)) |> print(width = Inf)
+```
+
+
