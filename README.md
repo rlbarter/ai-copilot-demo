@@ -58,7 +58,7 @@ For more instructions [click here](https://docs.posit.co/ide/user/ide/guide/tool
 
 You can download VS Code from the [VS Code website](https://code.visualstudio.com/).
 
-#### Setting up GitHub Copilot in RStudio
+#### Setting up GitHub Copilot in VS Code
 
 Inside VS Code, to use R and GitHub Copilot, you will need to install the following extensions:
 
